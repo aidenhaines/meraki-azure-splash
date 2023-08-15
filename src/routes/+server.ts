@@ -1,7 +1,9 @@
 import { PRIVATE_JWT_SECRET } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { sign } from 'jsonwebtoken';
+// import { sign } from 'jsonwebtoken';
+import pkg from 'jsonwebtoken';
+const { sign } = pkg;
 
 export const GET: RequestHandler = ({ url }) => {
 	const { searchParams } = new URL(url);

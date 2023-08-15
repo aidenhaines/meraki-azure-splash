@@ -14,7 +14,9 @@ import {
 	PUBLIC_REDIRECT_URL,
 	PUBLIC_HOME_PAGE
 } from '$env/static/public';
-import { decode, verify } from 'jsonwebtoken';
+// import { decode, verify } from 'jsonwebtoken';
+import pkg from 'jsonwebtoken';
+const { decode, verify } = pkg;
 
 const group_allowed = PRIVATE_GROUP_ALLOWED.split(',').filter((id) => id.length >= 2);
 const groups_blocked = PRIVATE_GROUP_BLOCKED.split(',').filter((id) => id.length >= 2);
