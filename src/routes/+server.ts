@@ -1,7 +1,9 @@
 import { PRIVATE_JWT_SECRET } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import jwt from 'jsonwebtoken';
+
+//jsrsasign
+import { KJUR } from 'jsrsasign';
 
 export const GET: RequestHandler = ({ url }) => {
 	const { searchParams } = new URL(url);
@@ -27,7 +29,13 @@ export const GET: RequestHandler = ({ url }) => {
 		clientIp
 	};
 
-	const token = jwt.sign(payload, PRIVATE_JWT_SECRET, { expiresIn: '1h' });
+	const token = KJUR.jws.JWS.sign(
+		'HS256',
+		JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
+		JSON.stringify(payload),
+		PRIVATE_JWT_SECRET
+	);
+
 
 	return new Response(null, {
 		status: 302,

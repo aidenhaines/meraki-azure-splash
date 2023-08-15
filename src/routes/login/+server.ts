@@ -14,7 +14,8 @@ import {
 	PUBLIC_REDIRECT_URL,
 	PUBLIC_HOME_PAGE
 } from '$env/static/public';
-import jwt from 'jsonwebtoken';
+
+import { KJUR } from 'jsrsasign';
 
 const group_allowed = PRIVATE_GROUP_ALLOWED.split(',').filter((id) => id.length >= 2);
 const groups_blocked = PRIVATE_GROUP_BLOCKED.split(',').filter((id) => id.length >= 2);
@@ -89,15 +90,22 @@ export const GET: RequestHandler = async ({ request, url }) => {
 	let splash = cookie.split(';').find((c) => c.trim().startsWith('splash='));
 	splash = splash?.split('=')[1];
 
-	if (!splash || !jwt.verify(splash, PRIVATE_JWT_SECRET)) {
-		return redirectToError();
-	}
+	if (!splash) return redirectToError();
+
+	const idVaid = KJUR.jws.JWS.verifyJWT(splash, PRIVATE_JWT_SECRET, { alg: ['HS256'] });
+	if (!idVaid) return redirectToError();
+
+	// decode jwt
 	let payload: LoginPayload;
 	try {
-		payload = jwt.decode(splash) as LoginPayload;
-	} catch (error) {
+		const decoded_jwt = KJUR.jws.JWS.parse(splash);
+		if (!decoded_jwt) return redirectToError();
+		if (!decoded_jwt.payloadObj) return redirectToError();
+		payload = decoded_jwt.payloadObj as LoginPayload;
+	} catch (e) {
 		return redirectToError();
 	}
+
 	if (!payload) return redirectToError();
 	// --------------------------------------------
 
@@ -134,7 +142,6 @@ export const GET: RequestHandler = async ({ request, url }) => {
 		redirect: 'manual'
 	});
 
-	console.log(verify_resp);
 
 	// Use the payload in your code here
 	return new Response(null, {
