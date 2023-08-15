@@ -12,7 +12,6 @@ import {
 	PUBLIC_AZ_CLIENT_ID,
 	PUBLIC_AZ_TENANT_ID,
 	PUBLIC_REDIRECT_URL,
-	PUBLIC_HOME_PAGE
 } from '$env/static/public';
 
 import { KJUR } from 'jsrsasign';
@@ -131,15 +130,13 @@ export const GET: RequestHandler = async ({ request, url }) => {
 
 	// Check 4: Verify the mauth token in payload
 	// Make a post request to payload.loginUrl with the meraki username and pass
-	const loginUrl =
-		payload.loginUrl + `&username=${PRIVATE_MERAKI_USERNAME}&password=${PRIVATE_MERAKI_PASSWORD}`;
+	const verify_url = payload.loginUrl + `&username=${PRIVATE_MERAKI_USERNAME}&password=${PRIVATE_MERAKI_PASSWORD}`;
 
-	const verify_resp = await fetch(loginUrl, {
+	const verify_resp = await fetch(verify_url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		redirect: 'manual'
 	});
 
 
@@ -147,7 +144,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
 	return new Response(null, {
 		status: 302,
 		headers: {
-			Location: PUBLIC_HOME_PAGE || 'https://google.com'
+			Location: payload.loginUrl
 		}
 	});
 };
