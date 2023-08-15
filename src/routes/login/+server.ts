@@ -14,9 +14,7 @@ import {
 	PUBLIC_REDIRECT_URL,
 	PUBLIC_HOME_PAGE
 } from '$env/static/public';
-// import { decode, verify } from 'jsonwebtoken';
-import pkg from 'jsonwebtoken';
-const { decode, verify } = pkg;
+import jwt from 'jsonwebtoken';
 
 const group_allowed = PRIVATE_GROUP_ALLOWED.split(',').filter((id) => id.length >= 2);
 const groups_blocked = PRIVATE_GROUP_BLOCKED.split(',').filter((id) => id.length >= 2);
@@ -91,12 +89,12 @@ export const GET: RequestHandler = async ({ request, url }) => {
 	let splash = cookie.split(';').find((c) => c.trim().startsWith('splash='));
 	splash = splash?.split('=')[1];
 
-	if (!splash || !verify(splash, PRIVATE_JWT_SECRET)) {
+	if (!splash || !jwt.verify(splash, PRIVATE_JWT_SECRET)) {
 		return redirectToError();
 	}
 	let payload: LoginPayload;
 	try {
-		payload = decode(splash) as LoginPayload;
+		payload = jwt.decode(splash) as LoginPayload;
 	} catch (error) {
 		return redirectToError();
 	}

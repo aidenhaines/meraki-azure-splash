@@ -1,9 +1,7 @@
 import { PRIVATE_JWT_SECRET } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-// import { sign } from 'jsonwebtoken';
-import pkg from 'jsonwebtoken';
-const { sign } = pkg;
+import jwt from 'jsonwebtoken';
 
 export const GET: RequestHandler = ({ url }) => {
 	const { searchParams } = new URL(url);
@@ -29,7 +27,7 @@ export const GET: RequestHandler = ({ url }) => {
 		clientIp
 	};
 
-	const token = sign(payload, PRIVATE_JWT_SECRET, { expiresIn: '1h' });
+	const token = jwt.sign(payload, PRIVATE_JWT_SECRET, { expiresIn: '1h' });
 
 	return new Response(null, {
 		status: 302,
