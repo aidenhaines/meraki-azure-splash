@@ -54,12 +54,8 @@
 		<!-- Button -->
 		<div class="p-6">
 			<a href={authUrl}>
-				<img
-					src="https://learn.microsoft.com/en-us/azure/active-directory/develop/media/howto-add-branding-in-apps/ms-symbollockup_signin_dark.svg"
-					alt="Microsoft Logo"
-				/>
+				<img src="/ms-symbollockup_signin_dark.svg" alt="Microsoft Logo" />
 			</a>
 		</div>
 	</div>
 </div>
-
