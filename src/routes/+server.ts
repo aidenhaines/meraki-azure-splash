@@ -15,8 +15,12 @@ export const GET: RequestHandler = ({ url }) => {
 	const clientMac = searchParams.get('client_mac');
 	const clientIp = searchParams.get('client_ip');
 
-	if (!loginUrl || !continueUrl || !apMac || !apName || !apTags || !clientMac || !clientIp) {
-		return new Response('Missing required parameters', { status: 400 });
+	if (!loginUrl || !continueUrl) {
+		return new Response(null, {
+			headers: {
+				Location: '/error/unknown'
+			}
+		});
 	}
 
 	const payload = {
@@ -35,7 +39,6 @@ export const GET: RequestHandler = ({ url }) => {
 		JSON.stringify(payload),
 		PRIVATE_JWT_SECRET
 	);
-
 
 	return new Response(null, {
 		status: 302,
