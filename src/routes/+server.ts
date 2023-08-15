@@ -17,6 +17,7 @@ export const GET: RequestHandler = ({ url }) => {
 
 	if (!loginUrl || !continueUrl) {
 		return new Response(null, {
+			status: 302,
 			headers: {
 				Location: '/error/unknown'
 			}
