@@ -41,11 +41,20 @@ export const GET: RequestHandler = ({ url }) => {
 		PRIVATE_JWT_SECRET
 	);
 
-	return new Response(null, {
+	const html = `
+		<html>
+		<body>
+			You are being <a href="/splash">redirected</a>.
+		</body>
+		</html>
+	`;
+
+	return new Response(html, {
 		status: 302,
 		headers: {
 			Location: '/splash',
-			'Set-Cookie': `splash=${token}; Path=/; Secure; SameSite=None; HttpOnly; Max-Age=3600`
+			'Set-Cookie': `splash=${token}; Path=/; Secure; SameSite=None; HttpOnly; Max-Age=3600`,
+			'Cache-Control': 'no-cache, no-store, must-revalidate'
 		}
 	});
 };
